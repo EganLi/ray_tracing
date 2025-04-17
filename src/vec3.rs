@@ -1,3 +1,5 @@
+use std::fs::File;
+use std::io::Write;
 use std::{
     fmt::Display,
     ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign},
@@ -125,6 +127,30 @@ impl Mul<f64> for Vec3 {
     }
 }
 
+impl Mul<Vec3> for f64 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3 {
+            x: self * rhs.x,
+            y: self * rhs.y,
+            z: self * rhs.z,
+        }
+    }
+}
+
+impl Mul<Vec3> for i32 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3 {
+            x: (self as f64) * rhs.x,
+            y: (self as f64) * rhs.y,
+            z: (self as f64) * rhs.z,
+        }
+    }
+}
+
 impl Mul<&Vec3> for f64 {
     type Output = Vec3;
 
@@ -173,6 +199,18 @@ impl Div<f64> for Vec3 {
             x: self.x / rhs,
             y: self.y / rhs,
             z: self.z / rhs,
+        }
+    }
+}
+
+impl Div<i32> for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: i32) -> Self::Output {
+        Vec3 {
+            x: self.x / (rhs as f64),
+            y: self.y / (rhs as f64),
+            z: self.z / (rhs as f64),
         }
     }
 }
@@ -257,10 +295,12 @@ pub fn unit_vector(v: Vec3) -> Vec3 {
     v / v.length()
 }
 
-pub fn write_color(pixel_color: &Color) {
+pub fn write_color(file: &mut File, pixel_color: &Color) -> std::io::Result<()> {
     let r = (255.999 * pixel_color.x()) as u8;
     let g = (255.999 * pixel_color.y()) as u8;
     let b = (255.999 * pixel_color.z()) as u8;
 
-    println!("{} {} {}", r, g, b);
+    writeln!(file, "{} {} {}", r, g, b)?;
+    // println!("{} {} {}", r, g, b);
+    Ok(())
 }
