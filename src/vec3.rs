@@ -5,7 +5,7 @@ use std::{
     ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Vec3 {
     x: f64,
     y: f64,
@@ -44,8 +44,14 @@ impl Vec3 {
         self.length_squared().sqrt()
     }
 
-    fn length_squared(&self) -> f64 {
+    pub fn length_squared(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
+    }
+
+    pub fn assign(&mut self, right: &Vec3) {
+        self.x = right.x();
+        self.y = right.y();
+        self.z = right.z();
     }
 }
 
@@ -87,6 +93,17 @@ impl Sub for Vec3 {
     type Output = Vec3;
 
     fn sub(self, rhs: Self) -> Self::Output {
+        Vec3 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
+    }
+}
+
+impl Sub<&Vec3> for &Vec3 {
+    type Output = Vec3;
+    fn sub(self, rhs: &Vec3) -> Self::Output {
         Vec3 {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
@@ -234,6 +251,18 @@ impl DivAssign for Vec3 {
         self.x /= rhs.x;
         self.y /= rhs.y;
         self.z /= rhs.z;
+    }
+}
+
+impl Neg for &Vec3 {
+    type Output = Vec3;
+
+    fn neg(self) -> Self::Output {
+        Vec3 {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
     }
 }
 
