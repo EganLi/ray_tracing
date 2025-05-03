@@ -2,6 +2,7 @@ use std::{fs::File, io::Write};
 
 use hittable::{HitRecord, Hittable};
 use hittable_list::HittableList;
+use interval::Interval;
 use ray::Ray;
 use rtweekend::infinity;
 use sphere::Sphere;
@@ -9,6 +10,7 @@ use vec3::{Color, Point, Vec3, dot, unit_vector, write_color};
 
 mod hittable;
 mod hittable_list;
+mod interval;
 mod ray;
 mod rtweekend;
 mod sphere;
@@ -31,7 +33,7 @@ fn hit_sphere(center: &Point, radius: f64, r: &Ray) -> f64 {
 
 fn ray_color<T: Hittable>(r: &Ray, world: &T) -> Color {
     let mut rec = HitRecord::default();
-    if world.hit(r, 0.0, infinity, &mut rec) {
+    if world.hit(r, Interval::new(0.0, infinity), &mut rec) {
         return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
     }
 

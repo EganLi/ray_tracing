@@ -2,20 +2,13 @@ use crate::vec3;
 use crate::vec3::Point;
 use crate::vec3::Vec3;
 
-// #[derive(Clone, Copy)]
+#[derive(Clone, Copy, Default)]
 pub struct Ray {
     orig: Point,
     dir: Vec3,
 }
 
 impl Ray {
-    pub fn default() -> Ray {
-        Ray {
-            orig: Point::default(),
-            dir: Vec3::default(),
-        }
-    }
-
     pub fn new(ori: &Point, dir: &Vec3) -> Ray {
         Ray {
             orig: Point::new(ori.x(), ori.y(), ori.z()),
