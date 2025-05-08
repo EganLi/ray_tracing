@@ -5,6 +5,8 @@ use std::{
     ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
+use crate::interval::{self, Interval};
+
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Vec3 {
     x: f64,
@@ -316,12 +318,30 @@ pub fn unit_vector(v: Vec3) -> Vec3 {
     v / v.length()
 }
 
-pub fn write_color(file: &mut File, pixel_color: &Color) -> std::io::Result<()> {
-    let r = (255.999 * pixel_color.x()) as u8;
-    let g = (255.999 * pixel_color.y()) as u8;
-    let b = (255.999 * pixel_color.z()) as u8;
+pub fn write_color(
+    file: &mut File,
+    pixel_color: &Color,
+    samples_per_pixel: i32,
+) -> std::io::Result<()> {
+    let mut r = pixel_color.x();
+    let mut g = pixel_color.y();
+    let mut b = pixel_color.z();
 
-    writeln!(file, "{} {} {}", r, g, b)?;
+    let scale = 1.0 / samples_per_pixel as f64;
+
+    r *= scale;
+    g *= scale;
+    b *= scale;
+
+    let intensity = Interval::new(0.000, 0.999);
+
+    writeln!(
+        file,
+        "{} {} {}",
+        (256.0 * intensity.clamp(r)) as u8,
+        (256.0 * intensity.clamp(g)) as u8,
+        (256.0 * intensity.clamp(b)) as u8
+    )?;
     // println!("{} {} {}", r, g, b);
     Ok(())
 }
