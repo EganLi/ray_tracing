@@ -1,7 +1,7 @@
 use crate::{
     interval::Interval,
     ray::Ray,
-    vec3::{self, Point, Vec3, dot},
+    vec3::{Point, Vec3, dot},
 };
 
 #[derive(Clone, Default)]
